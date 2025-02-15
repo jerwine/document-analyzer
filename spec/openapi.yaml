@@ -1,0 +1,223 @@
+openapi: 3.0.2
+info:
+  title: Document Analyzer API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+servers:
+- url: https://localhost:8080/
+paths:
+  /users:
+    summary: Users
+    description: Return all the Users with result limit
+    get:
+      summary: GET all the Users
+      operationId: getUsers
+      parameters:
+        - name: limit
+          in: query
+          description: result limit
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    get:
+      summary: GET User by id
+      operationId: getUserById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the User to return
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/inactive:
+    summary: Users
+    description: Return inactive Users not updating documents within the startDate and endDate
+    get:
+      summary: GET inactive Users
+      operationId: getInactiveUsers
+      parameters:
+        - name: startDate
+          in: query
+          description: Start Date to filter with in YYYY-MM-DD format
+          required: false
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          description: End Date to filter with in YYYY-MM-DD format
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /documents:
+    summary: Documents
+    description: Return all documents with result limit
+    get:
+      summary: GET all the Documents
+      operationId: getDocuments
+      parameters:
+        - name: limit
+          in: query
+          description: result limit
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+
+  /documents/{id}:
+    summary: Documents
+    description: Return a document for the given id
+    get:
+      summary: GET Document by id
+      operationId: getDocumentById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Document to return
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+
+  /documents/{id}/words-frequency:
+    summary: WordCount
+    description: Return the word frequency for a particular document
+    get:
+      summary: GET word count by document id
+      operationId: getWordCountByDocumentId
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Document to return the word count for
+          required: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          description: items size to return
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: sort
+          in: query
+          description: items sorting
+          required: false
+          schema:
+            type: string
+            enum: [asc,desc]
+            default: desc
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WordCount'
+
+  /documents/{id}/longest-word:
+    summary: LongestWord
+    description: Return the longest word(s) from the document with synonyms added
+    get:
+      summary: GET the longest word(s) with synonyms for document id
+      operationId: getLongestWordByDocumentId
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Document to return the word count for
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LongestWord'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        dateAdded:
+          type: string
+    Document:
+      type: object
+      properties:
+        name:
+          type: string
+        body:
+          type: string
+        wordCount:
+          type: integer
+    WordCount:
+      type: object
+      properties:
+        value:
+          type: string
+        frequency:
+          type: integer
+    LongestWord:
+      type: object
+      properties:
+        value:
+          type: string
+        synonyms:
+          type: array
+          items:
+            type: string

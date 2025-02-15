@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: document-analyzer
+
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    show-sql: true
