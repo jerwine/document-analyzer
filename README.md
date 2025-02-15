@@ -1,5 +1,17 @@
 # document-analyzer
 
+Open API yaml:
+
+https://github.com/jerwine/document-analyzer/blob/main/spec/openapi.yaml
+
+Schemas scripts:
+
+https://github.com/jerwine/document-analyzer/blob/main/src/main/resources/db/migration/V1_1_1__DOCUMENTS_SCHEMA.sql
+
+https://github.com/jerwine/document-analyzer/blob/main/src/main/resources/db/migration/V1_1_2__DOCUMENTS_SCHEMA.sql
+
+https://github.com/jerwine/document-analyzer/blob/main/src/main/resources/db/migration/V1_1_3__DOCUMENTS_SCHEMA.sql
+
 
 http://localhost:8080/h2-console
 
