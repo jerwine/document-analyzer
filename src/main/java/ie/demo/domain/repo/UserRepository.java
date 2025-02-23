@@ -12,29 +12,41 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(
         "SELECT" +
-        " DISTINCT  u " +
-        "FROM " +
-        " User u JOIN u.documents d " +
-        "WHERE " +
-        " d.uploadedAt >= :startDate" )
-    List<User> findUsersDocumentUpdateAfter(@Param("startDate") LocalDateTime startDate);
+         " u " +
+         "FROM " +
+         " User u " +
+         "WHERE " +
+         " u.id NOT IN (SELECT DISTINCT d.user.id FROM Document d)" )
+    List<User> findUsersWithoutDocumentUpdates();
 
     @Query(
         "SELECT" +
         " DISTINCT  u " +
         "FROM " +
-        " User u JOIN u.documents d " +
-        "WHERE " +
-        " d.uploadedAt <= :endDate" )
-    List<User> findUsersWithDocumentUpdateBefore(@Param("endDate") LocalDateTime endDate);
+        " User u " +
+        "WHERE u.id NOT IN ( " +
+        " SELECT DISTINCT d.user.id FROM Document d " +
+        " WHERE d.uploadedAt > :startDate )")
+    List<User> findUsersWithoutDocumentUpdatesOnOrAfter(@Param("startDate") LocalDateTime startDate);
 
     @Query(
         "SELECT" +
         " DISTINCT  u " +
         "FROM " +
-        " User u JOIN u.documents d " +
-        "WHERE " +
-        " d.uploadedAt BETWEEN :startDate AND :endDate" )
-    List<User> findUsersWithDocumentUpdateBetween(@Param("startDate") LocalDateTime startDate,
-                                                  @Param("endDate") LocalDateTime endDate);
+        " User u " +
+        "WHERE u.id NOT IN ( " +
+        " SELECT DISTINCT d.user.id FROM Document d " +
+        " WHERE d.uploadedAt < :endDate )")
+    List<User> findUsersWithoutDocumentUpdatesOnOrBefore(@Param("endDate") LocalDateTime endDate);
+
+    @Query( value =
+        "SELECT" +
+        " DISTINCT  u " +
+        "FROM " +
+        " User u " +
+        "WHERE u.id NOT IN ( " +
+        " SELECT DISTINCT d.user.id FROM Document d " +
+        " WHERE d.uploadedAt > :startDate AND d.uploadedAt < :endDate )")
+    List<User> findUsersWithoutDocumentUpdatesBetween(@Param("startDate") LocalDateTime startDate,
+                                                      @Param("endDate") LocalDateTime endDate);
 }

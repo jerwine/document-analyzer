@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,18 +34,25 @@ public class UserService {
                 .map(userMapper::toUserDTO);
     }
 
+    /**
+     * Find users that weren't uploading a document(s) between the {@code startDate} and {@code endDate}
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     public List<UserDTO> findInactiveByDatePeriod(String startDate, String endDate) {
         if(StringUtils.isEmpty(startDate) && StringUtils.isEmpty(endDate)) {
-            return List.of();
+            return mapCollect(userRepository
+                    .findUsersWithoutDocumentUpdates());
         } else if(StringUtils.isEmpty(endDate)) {
-            return mapCollect(userRepository.findUsersDocumentUpdateAfter(
+            return mapCollect(userRepository.findUsersWithoutDocumentUpdatesOnOrAfter(
                     LocalDate.parse(startDate).atStartOfDay()));
         } else if(StringUtils.isEmpty(startDate)) {
-            return mapCollect(userRepository.findUsersWithDocumentUpdateBefore(
-                    LocalDate.parse(endDate).atStartOfDay()));
+            return mapCollect(userRepository.findUsersWithoutDocumentUpdatesOnOrBefore(
+                    LocalDate.parse(endDate).atTime(LocalTime.MAX)));
         } else {
-            return mapCollect(userRepository.findUsersWithDocumentUpdateBetween(
-                    LocalDate.parse(startDate).atStartOfDay(), LocalDate.parse(endDate).atStartOfDay()));
+            return mapCollect(userRepository.findUsersWithoutDocumentUpdatesBetween(
+                    LocalDate.parse(startDate).atStartOfDay(), LocalDate.parse(endDate).atTime(LocalTime.MAX)));
         }
     }
 
