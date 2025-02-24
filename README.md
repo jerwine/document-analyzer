@@ -15,10 +15,10 @@ https://github.com/jerwine/document-analyzer/blob/main/src/main/resources/db/mig
 
 http://localhost:8080/h2-console
 
-![img.png](img/img_5.png)
+![img.png](img/img.png)
 ![img_11.png](img/img_11.png)
 
-http://localhost:8080/users/
+http://localhost:8080/users
 
 ![img_1.png](img/img_1.png)
 
